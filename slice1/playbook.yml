@@ -1,0 +1,13 @@
+#LEMP test ansible
+---
+- hosts: "all"
+  become: true
+  roles:
+  - nginx
+  - mysql
+  - php
+  tasks:
+  - name: "nginx reload"
+    ansible.builtin.service:
+      name: "nginx"
+      state: "reloaded"
