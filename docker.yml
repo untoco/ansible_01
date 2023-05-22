@@ -1,0 +1,21 @@
+---
+- hosts: "all"
+  become: true
+  tasks:
+  - name: "docker install"
+    ansible.builtin.apt:
+      name:
+      - docker.io
+      - docker-compose
+      - docker-registry
+      state: "latest"
+      update_cache: true
+  - name: "add to docker group"
+    ansible.builtin.user:
+      name: "vagrant"
+      group: "docker"
+  - name: "docker dir"
+    ansible.builtin.file:
+      path: /opt/docker
+      state: directory
+      mode: '0755'
