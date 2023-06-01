@@ -1,0 +1,6 @@
+---
+- name: "Docker swarm deploy"
+  hosts: cluster
+  become: true
+  roles:
+    - docker_install
