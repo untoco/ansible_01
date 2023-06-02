@@ -1,2 +1,2 @@
-# some ansible playbook
+# some devoops stuff 
 simple ones, used occasionally
