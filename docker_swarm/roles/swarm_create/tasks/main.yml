@@ -1,0 +1,31 @@
+- name: "Get leader address"
+  ansible.builtin.set_fact:
+    leader_address: "{{ hostvars[groups['leader'][0]].ansible_host }}"
+
+- name: "Create swarm cluster"
+  community.docker.docker_swarm:
+    advertise_addr: "{{ ansible_host }}"
+    state: present
+  register: token
+  when: "'leader' in group_names"
+
+- name: "Get join-token for nodes"
+  ansible.builtin.set_fact:
+    join_token_manager: "{{ hostvars[groups['leader'][0]].token.swarm_facts.JoinTokens.Manager }}"
+    join_token_worker: "{{ hostvars[groups['leader'][0]].token.swarm_facts.JoinTokens.Worker }}"
+
+- name: "Add managers nodes"
+  community.docker.docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_host }}"
+    join_token: "{{ join_token_manager }}"
+    remote_addrs: "{{ leader_address }}"
+  when: "'manager' in group_names"
+
+- name: "Add workers nodes"
+  community.docker.docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_host }}"
+    join_token: "{{ join_token_worker }}"
+    remote_addrs: "{{ leader_address }}"
+  when: "'worker' in group_names"

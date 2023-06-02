@@ -16,3 +16,6 @@
     path: /opt/docker
     state: directory
     mode: '0755'
+
+- name: "Reboot"
+  ansible.builtin.reboot:
