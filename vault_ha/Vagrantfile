@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
 
-(1..5).each do |i|
+(1..2).each do |i|
     config.vm.provider "virtualbox" do |vb|
      vb.memory = "2048"
      vb.cpus = "1"

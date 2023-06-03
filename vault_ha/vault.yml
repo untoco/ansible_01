@@ -1,0 +1,13 @@
+---
+- name: Nodes init
+  hosts: cluster
+  become: true
+  roles:
+    - role: docker_install
+      tags: init
+
+- name: Vault deploy
+  hosts: cluster
+  roles:
+    - role: vault_install
+      tags: deploy
