@@ -1,0 +1,21 @@
+- name: Get leader address and tokens
+  ansible.builtin.set_fact:
+    leader_address: "{{ hostvars[groups['leader'][0]].ansible_host }}"
+    join_token_manager: "{{ lookup('file', './tokens/token_manager')}}"
+    join_token_worker: "{{ lookup('file', './tokens/token_worker')}}"
+
+- name: Add managers nodes
+  community.docker.docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_host }}"
+    join_token: "{{ join_token_manager }}"
+    remote_addrs: "{{ leader_address }}"
+  when: "'manager' in group_names"
+
+- name: Add workers nodes
+  community.docker.docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_host }}"
+    join_token: "{{ join_token_worker }}"
+    remote_addrs: "{{ leader_address }}"
+  when: "'worker' in group_names"

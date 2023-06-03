@@ -1,31 +1,32 @@
-- name: "Get leader address"
-  ansible.builtin.set_fact:
-    leader_address: "{{ hostvars[groups['leader'][0]].ansible_host }}"
-
-- name: "Create swarm cluster"
+- name: Create swarm cluster
   community.docker.docker_swarm:
     advertise_addr: "{{ ansible_host }}"
     state: present
   register: token
   when: "'leader' in group_names"
 
-- name: "Get join-token for nodes"
+- name: Get join-token for nodes
   ansible.builtin.set_fact:
-    join_token_manager: "{{ hostvars[groups['leader'][0]].token.swarm_facts.JoinTokens.Manager }}"
-    join_token_worker: "{{ hostvars[groups['leader'][0]].token.swarm_facts.JoinTokens.Worker }}"
+    join_token_manager: "{{ token.swarm_facts.JoinTokens.Manager }}"
+    join_token_worker: "{{ token.swarm_facts.JoinTokens.Worker }}"
 
-- name: "Add managers nodes"
-  community.docker.docker_swarm:
-    state: join
-    advertise_addr: "{{ ansible_host }}"
-    join_token: "{{ join_token_manager }}"
-    remote_addrs: "{{ leader_address }}"
-  when: "'manager' in group_names"
+- name: Create a directory for join tokens
+  ansible.builtin.file:
+    path: ./tokens
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
 
-- name: "Add workers nodes"
-  community.docker.docker_swarm:
-    state: join
-    advertise_addr: "{{ ansible_host }}"
-    join_token: "{{ join_token_worker }}"
-    remote_addrs: "{{ leader_address }}"
-  when: "'worker' in group_names"
+- name: Save manager token to file
+  ansible.builtin.copy:
+    dest: ./tokens/token_manager
+    content: "{{ join_token_manager }}"
+    mode: '0600'
+  delegate_to: localhost
+
+- name: Save worker token to file
+  ansible.builtin.copy:
+    dest: ./tokens/token_worker
+    content: "{{ join_token_worker }}"
+    mode: '0600'
+  delegate_to: localhost

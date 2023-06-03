@@ -1,14 +1,19 @@
 ---
-- name: "Docker swarm init"
+- name: Docker swarm init
   hosts: cluster
   become: true
   roles:
     - role: docker_install
       tags: init
 
-- name: "Docker swarm deploy"
-  hosts: cluster
-  become: true
+- name: Docker swarm deploy
+  hosts: leader
   roles:
     - role: swarm_create
       tags: create
+
+- name: Docker swarm join
+  hosts: cluster
+  roles: 
+    - role: swarm_join
+      tags: join

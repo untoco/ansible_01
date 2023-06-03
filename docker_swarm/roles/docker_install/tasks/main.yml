@@ -1,4 +1,4 @@
-- name: "Docker install"
+- name: Docker install
   ansible.builtin.apt:
     name:
       - docker.io
@@ -6,16 +6,16 @@
     state: "present"
     update_cache: true
 
-- name: "Add to docker group"
+- name: Add to docker group
   ansible.builtin.user:
     name: "{{ ansible_user }}"
     group: "docker"
 
-- name: "Create docker dir"
+- name: Create docker dir
   ansible.builtin.file:
     path: /opt/docker
     state: directory
     mode: '0755'
 
-- name: "Reboot"
+- name: Reboot
   ansible.builtin.reboot:
