@@ -1,0 +1,12 @@
+version: '2'
+services:
+  vault:
+    image: hashicorp/vault
+    container_name: vault
+    ports:
+      - "8200:8200"
+    restart: always
+    volumes:
+      - /opt/docker/vault_data:/vault/data
+      - /opt/docker/vault_config:/vault/config
+    entrypoint: vault server -config=/vault/config/config.hcl

@@ -1,11 +1,51 @@
-- name: Create Vault container
-  community.docker.docker_container:
-    name: vault
-    image: hashicorp/vault
-    ports:
-      - "8200:8200"
-    capabilities:
-      - "IPC_LOCK"
-    env:
-      VAULT_DEV_ROOT_TOKEN_ID: "my_root_token"
-      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+- name: Create Vault data directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/docker/vault_data
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Create Vault config directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/docker/vault_config
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+
+- name: Put config to volume
+  become: true
+  ansible.builtin.copy:
+    src: ./configs/config.hcl
+    dest: /opt/docker/vault_config/config.hcl
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Put config to volume
+  become: true
+  ansible.builtin.copy:
+    src: ./configs/config.hcl
+    dest: /opt/docker/vault_config/config.hcl
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Put docker-compose to volume
+  become: true
+  ansible.builtin.copy:
+    src: ./configs/docker-compose.yml
+    dest: /opt/docker/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Deploy Docker Compose stack
+  become: true
+  community.docker.docker_compose:
+    project_src: /opt/docker
+    files:
+    - docker-compose.yml
