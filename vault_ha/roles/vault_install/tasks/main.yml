@@ -25,15 +25,6 @@
     group: root
     mode: '0600'
 
-- name: Put config to volume
-  become: true
-  ansible.builtin.copy:
-    src: ./configs/config.hcl
-    dest: /opt/docker/vault_config/config.hcl
-    owner: root
-    group: root
-    mode: '0600'
-
 - name: Put docker-compose to volume
   become: true
   ansible.builtin.copy:
