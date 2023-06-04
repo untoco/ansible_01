@@ -39,4 +39,4 @@
   community.docker.docker_compose:
     project_src: /opt/docker
     files:
-    - docker-compose.yml
+      - docker-compose.yml
