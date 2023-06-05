@@ -1,4 +1,5 @@
 .DS_Store
 .vagrant
 .vscode
+test
 docker_swarm/tokens
