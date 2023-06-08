@@ -1,0 +1,23 @@
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Docker install
+  ansible.builtin.apt:
+    name:
+      - docker.io
+    state: "present"
+
+- name: Add to docker group
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    group: "docker"
+
+- name: Create docker dir
+  ansible.builtin.file:
+    path: /opt/docker
+    state: directory
+    mode: '0755'
+
+# - name: Reboot
+#   ansible.builtin.reboot:

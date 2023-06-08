@@ -1,0 +1,14 @@
+---
+- name: Nodes init
+  hosts: cluster
+  become: true
+  roles:
+    - role: docker_install
+      tags: init
+
+- name: Kuberenets init
+  hosts: cluster
+  become: true
+  roles:
+    - role: k8s_deploy
+      tags: k8s_deploy
